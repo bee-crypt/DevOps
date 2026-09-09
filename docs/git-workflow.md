@@ -15,3 +15,27 @@
 ## Даты и проверяемость
 
 Даты коммитов вручную установлены на 8–10 сентября 2026 года по запросу владельца. Issue и PR хранят реальные даты создания. Для просмотра дат используется git log --format=fuller.
+
+## Реальная демонстрация конфликта
+
+Ветки lr1-fixes и demo/local-checks разошлись от 312a24f. В demo/local-checks коммит b6de3f6 изменил строку обязательной проверки на Make; в lr1-fixes коммит c59d6df изменил ту же строку на переносимую команду Python. Выполнено git merge --no-commit --no-ff demo/local-checks. Git остановился с конфликтом README.md:
+
+```text
+Auto-merging README.md
+CONFLICT (content): Merge conflict in README.md
+Automatic merge failed; fix conflicts and then commit the result.
+UU README.md
+```
+
+Конфликт разрешён объединением инструкций: обязательная команда Python и равнозначный Make при его наличии. Маркеры конфликта удалены, файл добавлен в индекс и создан настоящий merge-коммит 75d0d5265fae0fa05a8fe867f0f288b3cd8791a4. Его родители: c59d6dfdc31f5e20b3c2fe950e12b0ba19acf7e3 b6de3f6a8eafea4cb0e5df9c7e6ee0e3d6a27478.
+
+Проверка доказательства:
+
+```bash
+git show --format=fuller --no-patch 75d0d5265fae0fa05a8fe867f0f288b3cd8791a4
+git diff c59d6dfdc31f5e20b3c2fe950e12b0ba19acf7e3 75d0d5265fae0fa05a8fe867f0f288b3cd8791a4 -- README.md
+git diff b6de3f6a8eafea4cb0e5df9c7e6ee0e3d6a27478 75d0d5265fae0fa05a8fe867f0f288b3cd8791a4 -- README.md
+git log --graph --oneline --all
+```
+
+Демонстрация выполнена локально, а её ветка и merge должны быть отправлены вместе с lr1-fixes. Она не является отдельным опубликованным PR.
